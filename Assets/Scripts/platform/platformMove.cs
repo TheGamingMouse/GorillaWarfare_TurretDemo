@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class platformMove : MonoBehaviour
+public class PlatformMove : MonoBehaviour
 {
     #region Variables
 

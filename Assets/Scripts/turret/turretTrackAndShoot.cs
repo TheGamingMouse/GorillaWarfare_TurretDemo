@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class turretTrackAndShoot : MonoBehaviour
+public class TurretTrackAndShoot : MonoBehaviour
 {
     #region Variables
 
@@ -22,20 +22,21 @@ public class turretTrackAndShoot : MonoBehaviour
     [SerializeField] LayerMask obstructionMask;
 
     [Header("Components")]
-    Transform target;
+    [SerializeField] Transform target;
     Transform player;
+    Transform playerHead;
+    Transform playerFeet;
     Vector3 FoVPointA;
     Vector3 FoVPointB;
 
     [Header("FoV")]
-    float viewRadius;
-    float viewAngle = 135f;
-    Vector3 topAngle;
-    Vector3 bottomAngle;
-    Vector3 DirFromAngle(float angleIndDegrees)
+    static float viewAngle = 135f;
+    static Vector3 DirFromAngle(float angleIndDegrees)
     {
         return new Vector3(Mathf.Sin((angleIndDegrees - 90f) * Mathf.Deg2Rad), Mathf.Cos((angleIndDegrees - 90f) * Mathf.Deg2Rad), 0);
     }
+    Vector3 topAngle = DirFromAngle(-viewAngle / 2);
+    Vector3 bottomAngle = DirFromAngle(viewAngle / 2);
 
     #endregion
 
@@ -45,10 +46,8 @@ public class turretTrackAndShoot : MonoBehaviour
     void Start()
     {
         player = GameObject.FindWithTag("Player").transform;
-
-        // FoV
-        topAngle = DirFromAngle(-viewAngle / 2);
-        bottomAngle = DirFromAngle(viewAngle / 2);
+        playerHead = player.Find("Head").transform;
+        playerFeet = player.Find("Feet").transform;
 
         // Fov Triangle
         FoVPointA = transform.position + topAngle * (range + 8);
@@ -100,7 +99,7 @@ public class turretTrackAndShoot : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.Linecast(transform.position, player.position, obstructionMask);
 
-        if (hit == true)
+        if (hit)
         {
             // print("Target obstructed");
             return true;
@@ -111,7 +110,13 @@ public class turretTrackAndShoot : MonoBehaviour
 
     bool TargetInRange()
     {
-        return Vector2.Distance(player.position, transform.position) <= range;
+        if ((Vector2.Distance(player.position, transform.position) <= range) || 
+            (Vector2.Distance(playerHead.position, transform.position) <= range) || 
+            (Vector2.Distance(playerFeet.position, transform.position) <= range))
+        {
+            return true;
+        }
+        return false;
     }
 
     bool TargetWithinAngle()
@@ -198,15 +203,18 @@ public class turretTrackAndShoot : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, transform.position + topAngle * range);
+        Gizmos.DrawLine(transform.position, transform.position + bottomAngle * range);
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, range);
+
         if (player)
         {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(transform.position, range);
             Gizmos.DrawLine(transform.position, player.position);
-
-            Gizmos.color = Color.blue;
-            Gizmos.DrawLine(transform.position, transform.position + topAngle * range);
-            Gizmos.DrawLine(transform.position, transform.position + bottomAngle * range);
+            Gizmos.DrawLine(transform.position, playerHead.position);
+            Gizmos.DrawLine(transform.position, playerFeet.position);
         }
 
         if (target)

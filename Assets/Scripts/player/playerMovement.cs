@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class playerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     #region Variables
 
@@ -35,19 +35,6 @@ public class playerMovement : MonoBehaviour
     {
         move.x = Input.GetAxisRaw("Horizontal");
         move.y =Input.GetAxisRaw("Vertical");
-
-        LookAtMouse();
-    }
-
-    #endregion
-
-    #region Functions
-
-    void LookAtMouse()
-    {
-        Vector2 mPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        bazooka.transform.up = mPos - new Vector2(transform.position.x, transform.position.y);
-        bazooka.transform.rotation *= Quaternion.Euler(0,0,90);
     }
 
     #endregion
