@@ -8,14 +8,14 @@ public class TurretTrackAndShoot : MonoBehaviour
     #region Variables
 
     [Header("Floats")]
-    float rotSpeed = 150f;
-    float range = 5f;
-    float firerate = 0.7f;
-    float cooldown = 2f;
+    readonly float rotSpeed = 150f;
+    readonly float range = 7f;
+    readonly float firerate = 0.7f;
+    readonly float cooldown = 2f;
 
     [Header("Bools")]
-    bool shooting;
-    bool tracking;
+    [SerializeField] bool shooting;
+    [SerializeField] bool tracking;
 
     [Header("LayerMasks")]
     [SerializeField] LayerMask playerMask;
@@ -24,13 +24,11 @@ public class TurretTrackAndShoot : MonoBehaviour
     [Header("Components")]
     [SerializeField] Transform target;
     Transform player;
-    Transform playerHead;
-    Transform playerFeet;
     Vector3 FoVPointA;
     Vector3 FoVPointB;
 
     [Header("FoV")]
-    static float viewAngle = 135f;
+    static readonly float viewAngle = 135f;
     static Vector3 DirFromAngle(float angleIndDegrees)
     {
         return new Vector3(Mathf.Sin((angleIndDegrees - 90f) * Mathf.Deg2Rad), Mathf.Cos((angleIndDegrees - 90f) * Mathf.Deg2Rad), 0);
@@ -46,17 +44,15 @@ public class TurretTrackAndShoot : MonoBehaviour
     void Start()
     {
         player = GameObject.FindWithTag("Player").transform;
-        playerHead = player.Find("Head").transform;
-        playerFeet = player.Find("Feet").transform;
-
-        // Fov Triangle
-        FoVPointA = transform.position + topAngle * (range + 8);
-        FoVPointB = transform.position + bottomAngle * (range + 8);
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Fov Triangle
+        FoVPointA = transform.position + topAngle * (range + 11.5f);
+        FoVPointB = transform.position + bottomAngle * (range + 11.5f);
+
         if (!target)
         {
             FindTarget();
@@ -90,8 +86,16 @@ public class TurretTrackAndShoot : MonoBehaviour
 
         if ((hits.Length > 0) && TargetInRange() && TargetWithinAngle() && !IsObstructed())
         {
-            target = hits[0].transform;
             tracking = true;
+            if (hits[0].transform.Find("Player"))
+            {
+                target = player;
+            }
+        }
+        else
+        {
+            target = null;
+            tracking = false;
         }
     }
 
@@ -110,9 +114,7 @@ public class TurretTrackAndShoot : MonoBehaviour
 
     bool TargetInRange()
     {
-        if ((Vector2.Distance(player.position, transform.position) <= range) || 
-            (Vector2.Distance(playerHead.position, transform.position) <= range) || 
-            (Vector2.Distance(playerFeet.position, transform.position) <= range))
+        if (Vector2.Distance(player.position, transform.position) <= range)
         {
             return true;
         }
@@ -160,12 +162,9 @@ public class TurretTrackAndShoot : MonoBehaviour
         
         yield return new WaitForSeconds(cooldown);
 
-        if (!IsObstructed())
-        {
-            shooting = true;
-            StartCoroutine(ShootBurst());
-            // print("Burst started");
-        }
+        shooting = true;
+        StartCoroutine(ShootBurst());
+        // print("Burst started");
     }
 
     IEnumerator ShootBurst()
@@ -213,8 +212,6 @@ public class TurretTrackAndShoot : MonoBehaviour
         if (player)
         {
             Gizmos.DrawLine(transform.position, player.position);
-            Gizmos.DrawLine(transform.position, playerHead.position);
-            Gizmos.DrawLine(transform.position, playerFeet.position);
         }
 
         if (target)
