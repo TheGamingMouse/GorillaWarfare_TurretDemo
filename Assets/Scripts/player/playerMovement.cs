@@ -11,7 +11,6 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Components")]
     Rigidbody2D rb;
-    GameObject bazooka;
     Vector2 move;
 
     #endregion
@@ -22,7 +21,6 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponentInParent<Rigidbody2D>();
-        bazooka = GameObject.FindWithTag("Bazooka");
     }
 
     void FixedUpdate()

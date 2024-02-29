@@ -9,32 +9,33 @@ public class TurretTrackAndShoot : MonoBehaviour
 
     [Header("Floats")]
     readonly float rotSpeed = 150f;
-    readonly float range = 7f;
+    readonly float range = 15f;
     readonly float firerate = 0.7f;
-    readonly float cooldown = 2f;
+    readonly float cooldown = 0.8f;
+    readonly float viewAngle = 135f;
 
     [Header("Bools")]
     [SerializeField] bool shooting;
     [SerializeField] bool tracking;
+    [SerializeField] bool isLookingLeft = true;
 
-    [Header("LayerMasks")]
-    [SerializeField] LayerMask playerMask;
-    [SerializeField] LayerMask obstructionMask;
-
-    [Header("Components")]
-    [SerializeField] Transform target;
-    Transform player;
+    [Header("Vector3s")]
     Vector3 FoVPointA;
     Vector3 FoVPointB;
-
-    [Header("FoV")]
-    static readonly float viewAngle = 135f;
+    Vector3 topAngle;
+    Vector3 bottomAngle;
     static Vector3 DirFromAngle(float angleIndDegrees)
     {
         return new Vector3(Mathf.Sin((angleIndDegrees - 90f) * Mathf.Deg2Rad), Mathf.Cos((angleIndDegrees - 90f) * Mathf.Deg2Rad), 0);
     }
-    Vector3 topAngle = DirFromAngle(-viewAngle / 2);
-    Vector3 bottomAngle = DirFromAngle(viewAngle / 2);
+
+    [Header("Transforms")]
+    Transform target;
+    Transform player;
+
+    [Header("LayerMasks")]
+    [SerializeField] LayerMask playerMask;
+    [SerializeField] LayerMask obstructionMask;
 
     #endregion
 
@@ -44,17 +45,29 @@ public class TurretTrackAndShoot : MonoBehaviour
     void Start()
     {
         player = GameObject.FindWithTag("Player").transform;
+
+        if (isLookingLeft)
+        {
+            topAngle = DirFromAngle(-viewAngle / 2);
+            bottomAngle = DirFromAngle(viewAngle / 2);
+        }
+        else
+        {
+            topAngle = DirFromAngle((-viewAngle + 360) / 2);
+            bottomAngle = DirFromAngle((viewAngle + 360) / 2);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         // Fov Triangle
-        FoVPointA = transform.position + topAngle * (range + 11.5f);
-        FoVPointB = transform.position + bottomAngle * (range + 11.5f);
+        FoVPointA = transform.position + topAngle * (range + range * 1.6f);
+        FoVPointB = transform.position + bottomAngle * (range + range * 1.6f);
 
-        if (!target)
+        if (!target && !shooting)
         {
+            RotateToDefault();
             FindTarget();
             return;
         }
@@ -149,6 +162,20 @@ public class TurretTrackAndShoot : MonoBehaviour
             Quaternion targetRotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotSpeed * Time.deltaTime);
         }
+    }
+
+    void RotateToDefault()
+    {
+        Quaternion targetRotation;
+        if (isLookingLeft)
+        {
+            targetRotation = Quaternion.Euler(new Vector3(0f, 0f, 0f));
+        }
+        else
+        {
+            targetRotation = Quaternion.Euler(new Vector3(0f, 0f, 180f));
+        }
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotSpeed * Time.deltaTime);
     }
 
     #endregion
