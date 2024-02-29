@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Bazooka
   - MovePoint
+  - BulletPrefabFolder
+  - PrefabFolder
+  - PlayerObject
   layers:
   - Default
   - TransparentFX

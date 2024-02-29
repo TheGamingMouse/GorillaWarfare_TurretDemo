@@ -10,8 +10,9 @@ public class TurretTrackAndShoot : MonoBehaviour
     [Header("Floats")]
     readonly float rotSpeed = 150f;
     readonly float range = 15f;
-    readonly float firerate = 0.7f;
-    readonly float cooldown = 0.8f;
+    readonly float shootForce = 15f;
+    readonly float firerate = 0.1f;
+    readonly float cooldown = 1f;
     readonly float viewAngle = 135f;
 
     [Header("Bools")]
@@ -32,6 +33,11 @@ public class TurretTrackAndShoot : MonoBehaviour
     [Header("Transforms")]
     Transform target;
     Transform player;
+    [SerializeField] Transform firePoint;
+
+    [Header("GameObjects")]
+    [SerializeField] GameObject bulletPrefab;
+    GameObject BulletPrefabs;
 
     [Header("LayerMasks")]
     [SerializeField] LayerMask playerMask;
@@ -45,6 +51,7 @@ public class TurretTrackAndShoot : MonoBehaviour
     void Start()
     {
         player = GameObject.FindWithTag("Player").transform;
+        BulletPrefabs = GameObject.FindWithTag("BulletPrefabFolder");
 
         if (isLookingLeft)
         {
@@ -221,6 +228,10 @@ public class TurretTrackAndShoot : MonoBehaviour
     void Shoot()
     {
         // print("Bang!");
+
+        GameObject bulletCopy = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity, BulletPrefabs.transform);
+        bulletCopy.GetComponent<Rigidbody2D>().AddForce(firePoint.up * shootForce, ForceMode2D.Impulse);
+        bulletCopy.transform.rotation = transform.rotation * Quaternion.Euler(new Vector3(0,0,90));
     }
 
     #endregion
