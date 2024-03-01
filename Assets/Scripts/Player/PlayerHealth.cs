@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class PlayerHealth : MonoBehaviour
 {
+    #region  Variables
+
     [Header("Floats")]
     readonly float maxHealth = 3f;
     float health;
@@ -12,6 +14,10 @@ public class Player : MonoBehaviour
     [Header("Bools")]
     public bool cooldown = false;
 
+    #endregion
+
+    #region Event Subscribtions
+    
     void OnEnable()
     {
         BulletScript.OnDamage += HandleDamage;
@@ -22,6 +28,10 @@ public class Player : MonoBehaviour
         BulletScript.OnDamage -= HandleDamage;
     }
 
+    #endregion
+
+    #region StartUpdate
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +45,10 @@ public class Player : MonoBehaviour
         CheckHealth();
     }
 
+    #endregion
+
+    #region Methods
+    
     void CheckHealth()
     {
         if (health <= 0)
@@ -49,6 +63,16 @@ public class Player : MonoBehaviour
         print("Player has " + health + " health");
     }
 
+    IEnumerator CooldownRoutine()
+    {
+        yield return new WaitForSeconds(damageCooldown);
+        cooldown = false;
+    }
+
+    #endregion
+
+    #region Subribtion Handlers
+
     void HandleDamage()
     {
         StopCoroutine(nameof(CooldownRoutine));
@@ -56,9 +80,5 @@ public class Player : MonoBehaviour
         StartCoroutine(CooldownRoutine());
     }
 
-    IEnumerator CooldownRoutine()
-    {
-        yield return new WaitForSeconds(damageCooldown);
-        cooldown = false;
-    }
+    #endregion
 }

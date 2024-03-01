@@ -98,7 +98,7 @@ public class TurretTrackAndShoot : MonoBehaviour
 
     #endregion
 
-    #region FindPlayer
+    #region FindPlayerMethods
 
     void FindTarget()
     {
@@ -187,7 +187,7 @@ public class TurretTrackAndShoot : MonoBehaviour
 
     #endregion
 
-    #region Shooting
+    #region ShootingMethods
 
     IEnumerator Shooting()
     {

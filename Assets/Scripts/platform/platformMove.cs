@@ -27,7 +27,7 @@ public class PlatformMove : MonoBehaviour
 
     #endregion
 
-    #region Functions
+    #region Methods
 
     void OnCollisionEnter2D(Collision2D collision)
     {
