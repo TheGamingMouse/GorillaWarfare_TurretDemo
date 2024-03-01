@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5599022591925723203}
   - component: {fileID: 7346043137077018803}
   - component: {fileID: 4180699616565815197}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7468443424826221444}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -150,7 +150,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8456426410078104687}
   - component: {fileID: 6630838288919116579}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BaseBottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -234,7 +234,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5556717746399080440}
   - component: {fileID: 3632383070000210205}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Middle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -318,7 +318,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5044139009513475686}
   - component: {fileID: 5126104425522290598}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -402,7 +402,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 659586606635280673}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TurretObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -438,7 +438,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8082828574836918470}
   - component: {fileID: 4525076950120293791}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BaseTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}

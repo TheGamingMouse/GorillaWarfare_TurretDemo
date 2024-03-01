@@ -12,7 +12,7 @@ public class PlayerHealth : MonoBehaviour
     readonly float damageCooldown = 1f;
 
     [Header("Bools")]
-    public bool cooldown = false;
+    public bool cooldown;
 
     #endregion
 
@@ -37,6 +37,8 @@ public class PlayerHealth : MonoBehaviour
     {
         health = maxHealth;
         print("Player has " + health + " health");
+
+        cooldown = false;
     }
 
     // Update is called once per frame

@@ -20,6 +20,9 @@ public class BulletScript : MonoBehaviour
     [Header("Bools")]
     bool cooldown;
 
+    [Header("Components")]
+    Rigidbody2D rb;
+
     #endregion
 
     #region StartUpdate
@@ -27,6 +30,12 @@ public class BulletScript : MonoBehaviour
     void Awake()
     {
         StartCoroutine(DespawnTimer());
+    }
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        rb.mass = 0;
     }
 
     // Update is called once per frame
@@ -47,12 +56,16 @@ public class BulletScript : MonoBehaviour
             OnDamage?.Invoke();
         }
         Destroy(gameObject);
+
+        // print("bullet collided);
     }
 
     IEnumerator DespawnTimer()
     {
         yield return new WaitForSeconds(despawnTime);
         Destroy(gameObject);
+        
+        // print("bullet despawned");
     }
 
     #endregion

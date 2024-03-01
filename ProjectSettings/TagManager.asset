@@ -9,6 +9,9 @@ TagManager:
   - BulletPrefabFolder
   - PrefabFolder
   - PlayerObject
+  - MainMenuCamPos
+  - PlayerCamPos
+  - Canvas
   layers:
   - Default
   - TransparentFX
@@ -17,7 +20,7 @@ TagManager:
   - Water
   - UI
   - Obstruction
-  - 
+  - Turret
   - 
   - 
   - 

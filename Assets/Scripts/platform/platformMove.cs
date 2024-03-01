@@ -7,10 +7,10 @@ public class PlatformMove : MonoBehaviour
     #region Variables
 
     [Header("Floats")]
-    float moveSpeed = 0.5f;
+    readonly float moveSpeed = 0.5f;
 
     [Header("Bools")]
-    private bool isTop = true;
+    [SerializeField] bool isTop = true;
 
     #endregion
 
