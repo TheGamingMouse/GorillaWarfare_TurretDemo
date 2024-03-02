@@ -1,28 +1,42 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
+    #region Events
+
+    public static event Action OnPlayerFastCamActive;
+    public static event Action OnBeginGame;
+
+    #endregion
+    
     #region Variables
 
     [Header("Cameras")]
     Camera mainCam;
 
     [Header("Floats")]
-    readonly float moveSpeed = 1f;
+    readonly float moveSpeed = 4f;
 
     [Header("Bools")]
     bool mainMenuCamBool;
-    bool playerCamBool1;
-    public bool playerCamBool2;
+    bool playerCamBool;
+    bool playerFastCamBool;
     // bool printed;
 
     [Header("GameObjects")]
     GameObject playerCamPos;
     GameObject mainMenuCamPos;
 
+    // [Header("Debugging")]
+    // System.Diagnostics.Stopwatch watch;
+    // bool printed = false;
+
     #endregion
+
+    #region StartUpdate
 
     // Start is called before the first frame update
     void Start()
@@ -35,47 +49,63 @@ public class CameraManager : MonoBehaviour
         playerCamPos.transform.position = new Vector3(playerCamPos.transform.position.x, playerCamPos.transform.position.y, mainCam.transform.position.z);
 
         mainMenuCamBool = true;
-        playerCamBool1 = false;
-        playerCamBool2 = false;
+        playerCamBool = false;
+        playerFastCamBool = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        if (playerCamBool1)
-        {
-            mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, playerCamPos.transform.position, moveSpeed * Time.deltaTime);
-        }
-
-        if (playerCamBool2)
-        {
-            mainCam.transform.position = playerCamPos.transform.position;
-        }
-
         if (mainMenuCamBool)
         {
             mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, mainMenuCamPos.transform.position, moveSpeed * Time.deltaTime);
         }
-        if (mainCam.transform.position == playerCamPos.transform.position)
+        if (playerCamBool)
         {
-            // if (!printed)
-            // {
-            //     print("Time for transform.position " + Time.realtimeSinceStartup);
-            //     printed = true;
-            // }
-            ActivateFastPlayerCam();
+            mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, playerCamPos.transform.position, moveSpeed * Time.deltaTime);
+        }
+        if (playerFastCamBool)
+        {
+            mainCam.transform.position = playerCamPos.transform.position;
+        }
+    }
+    
+    // Update is called once per frame
+    void Update()
+    {
+        if (mainCam.transform.position == Vector3.Lerp(mainCam.transform.position, playerCamPos.transform.position, moveSpeed * Time.deltaTime))
+        {
+            ActivatePlayerFastCam();
         }
     }
 
+    #endregion
+
+    #region Methods
+
     public void ActivatePlayerCam()
     {
-        playerCamBool1 = true;
+        playerCamBool = true;
         mainMenuCamBool = false;
+        OnBeginGame?.Invoke();
+
+        // watch = System.Diagnostics.Stopwatch.StartNew();
+        // print("Timer started");
     }
 
-    void ActivateFastPlayerCam()
+    void ActivatePlayerFastCam()
     {
-        playerCamBool1 = false;
-        playerCamBool2 = true;
+        playerCamBool = false;
+        playerFastCamBool = true;
+        OnPlayerFastCamActive?.Invoke();
+
+        // if (!printed)
+        // {
+        //     watch.Stop();
+        //     print("Time for transform.position " + watch.ElapsedMilliseconds);
+
+        //     printed = true;
+        // }
     }
+
+    #endregion
 }

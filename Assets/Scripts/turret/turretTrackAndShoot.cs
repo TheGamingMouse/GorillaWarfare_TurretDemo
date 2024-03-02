@@ -9,7 +9,7 @@ public class TurretTrackAndShoot : MonoBehaviour
 
     [Header("Floats")]
     readonly float rotSpeed = 150f;
-    readonly float range = 15f;
+    readonly float range = 11f;
     readonly float shootForce = 15f;
     readonly float firerate = 0.1f;
     readonly float cooldown = 1f;
