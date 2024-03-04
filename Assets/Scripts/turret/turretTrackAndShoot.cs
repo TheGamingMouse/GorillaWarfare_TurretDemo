@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class TurretTrackAndShoot : MonoBehaviour
@@ -8,16 +7,16 @@ public class TurretTrackAndShoot : MonoBehaviour
     #region Variables
     
     [Header("Floats")]
-    readonly float rotSpeed = 150f;
-    readonly float range = 11f;
+    [SerializeField] float rotSpeed = 150f;
+    [SerializeField] float range = 11f;
     readonly float shootForce = 15f;
-    readonly float firerate = 0.1f;
-    readonly float cooldown = 1f;
-    readonly float viewAngle = 135f;
+    [SerializeField] float firerate = 0.1f;
+    [SerializeField] float cooldown = 1f;
+    [SerializeField] float viewAngle = 135f;
 
     [Header("Bools")]
-    [SerializeField] bool shooting;
-    [SerializeField] bool tracking;
+    bool shooting;
+    bool tracking;
     [SerializeField] bool isLookingLeft = true;
     [SerializeField] bool isOmniDirectional = false;
 
@@ -32,7 +31,7 @@ public class TurretTrackAndShoot : MonoBehaviour
     }
 
     [Header("Transforms")]
-    [SerializeField] Transform target;
+    Transform target;
     Transform player;
     [SerializeField] Transform firePoint;
 

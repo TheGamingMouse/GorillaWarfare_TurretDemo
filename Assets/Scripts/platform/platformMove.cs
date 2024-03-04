@@ -6,11 +6,16 @@ public class PlatformMove : MonoBehaviour
 {
     #region Variables
 
+    [SerializeField] DirectionState dState;
+
     [Header("Floats")]
-    readonly float moveSpeed = 0.5f;
+    [SerializeField] float moveSpeed = 0.5f;
 
     [Header("Bools")]
-    [SerializeField] bool isTop = true;
+    [SerializeField] bool isDefaultDirection = true;
+
+    [Header("Vector3s")]
+    Vector3 directionTranslation;
 
     #endregion
 
@@ -19,7 +24,16 @@ public class PlatformMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 directionTranslation = isTop ? transform.up : -transform.up;
+        switch (dState)
+        {
+            case DirectionState.vertical:
+                directionTranslation = isDefaultDirection ? transform.up : -transform.up;
+                break;
+
+            case DirectionState.horizontal:
+                directionTranslation = isDefaultDirection ? transform.right : -transform.right;
+                break;
+        }
         directionTranslation *= Time.deltaTime * moveSpeed;
 
         transform.Translate(directionTranslation);
@@ -29,13 +43,19 @@ public class PlatformMove : MonoBehaviour
 
     #region Methods
 
-    void OnCollisionEnter2D(Collision2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.transform.CompareTag("MovePoint"))
         {
-            isTop = !isTop;
+            isDefaultDirection = !isDefaultDirection;
         }
     }
 
     #endregion
+
+    public enum DirectionState
+    {
+        vertical,
+        horizontal
+    }
 }
