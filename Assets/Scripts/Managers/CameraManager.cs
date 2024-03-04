@@ -72,7 +72,7 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (mainCam.transform.position == Vector3.Lerp(mainCam.transform.position, playerCamPos.transform.position, moveSpeed * Time.deltaTime))
+        if ((mainCam.transform.position == Vector3.Lerp(mainCam.transform.position, playerCamPos.transform.position, moveSpeed * Time.deltaTime)) && playerCamBool)
         {
             ActivatePlayerFastCam();
         }

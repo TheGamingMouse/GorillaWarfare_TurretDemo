@@ -6,7 +6,7 @@ using UnityEngine;
 public class TurretTrackAndShoot : MonoBehaviour
 {
     #region Variables
-
+    
     [Header("Floats")]
     readonly float rotSpeed = 150f;
     readonly float range = 11f;
@@ -19,6 +19,7 @@ public class TurretTrackAndShoot : MonoBehaviour
     [SerializeField] bool shooting;
     [SerializeField] bool tracking;
     [SerializeField] bool isLookingLeft = true;
+    [SerializeField] bool isOmniDirectional = false;
 
     [Header("Vector3s")]
     Vector3 FoVPointA;
@@ -31,7 +32,7 @@ public class TurretTrackAndShoot : MonoBehaviour
     }
 
     [Header("Transforms")]
-    Transform target;
+    [SerializeField] Transform target;
     Transform player;
     [SerializeField] Transform firePoint;
 
@@ -52,6 +53,11 @@ public class TurretTrackAndShoot : MonoBehaviour
     {
         player = GameObject.FindWithTag("Player").transform;
         BulletPrefabs = GameObject.FindWithTag("BulletPrefabFolder");
+
+        if (isOmniDirectional)
+        {
+            isLookingLeft = true;
+        }
 
         if (isLookingLeft)
         {
@@ -107,7 +113,7 @@ public class TurretTrackAndShoot : MonoBehaviour
         if ((hits.Length > 0) && TargetInRange() && TargetWithinAngle() && !IsObstructed())
         {
             tracking = true;
-            if (hits[0].transform.Find("Player"))
+            if (hits[0].transform.CompareTag("Player"))
             {
                 target = player;
             }
@@ -143,21 +149,28 @@ public class TurretTrackAndShoot : MonoBehaviour
 
     bool TargetWithinAngle()
     {
-        Vector3 d, e;
-        Vector3 a = FoVPointA;
-        Vector3 b = FoVPointB;
-        Vector3 c = transform.position;
-        Vector3 p = player.position;
+        if (!isOmniDirectional)
+        {
+            Vector3 d, e;
+            Vector3 a = FoVPointA;
+            Vector3 b = FoVPointB;
+            Vector3 c = transform.position;
+            Vector3 p = player.position;
 
-        float w1, w2;
+            float w1, w2;
 
-        d = b - a;
-        e = c - a;
+            d = b - a;
+            e = c - a;
 
-        w1 = (e.x * (a.y - p.y) + e.y * (p.x - a.x)) / (d.x * e.y - d.y * e.x);
-        w2 = (p.y - a.y - w1 * d.y) / e.y;
+            w1 = (e.x * (a.y - p.y) + e.y * (p.x - a.x)) / (d.x * e.y - d.y * e.x);
+            w2 = (p.y - a.y - w1 * d.y) / e.y;
 
-        return (w1 >= 0.0) && (w2 >= 0.0) && ((w1 + w2) <= 1.0);
+            return (w1 >= 0.0) && (w2 >= 0.0) && ((w1 + w2) <= 1.0);
+        }
+        else
+        {
+            return true;
+        }
     }
 
     void RotateToTarget()
@@ -235,14 +248,17 @@ public class TurretTrackAndShoot : MonoBehaviour
     }
 
     #endregion
-
+    
     #region Gizmos:
 
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, transform.position + topAngle * range);
-        Gizmos.DrawLine(transform.position, transform.position + bottomAngle * range);
+        if (!isOmniDirectional)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(transform.position, transform.position + topAngle * range);
+            Gizmos.DrawLine(transform.position, transform.position + bottomAngle * range);
+        }
 
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, range);
@@ -257,10 +273,13 @@ public class TurretTrackAndShoot : MonoBehaviour
             Gizmos.color = Color.green;
             Gizmos.DrawLine(transform.position, target.position);
 
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, FoVPointA);
-            Gizmos.DrawLine(transform.position, FoVPointB);
-            Gizmos.DrawLine(FoVPointA, FoVPointB);
+            if (!isOmniDirectional)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(transform.position, FoVPointA);
+                Gizmos.DrawLine(transform.position, FoVPointB);
+                Gizmos.DrawLine(FoVPointA, FoVPointB);
+            }
         }
     }
 

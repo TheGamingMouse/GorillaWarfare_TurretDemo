@@ -41,7 +41,7 @@ public class BulletScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        cooldown = GameObject.FindWithTag("PlayerObject").GetComponent<PlayerHealth>().cooldown;
+        cooldown = GameObject.FindWithTag("Player").GetComponent<PlayerHealth>().cooldown;
     }
 
     #endregion
