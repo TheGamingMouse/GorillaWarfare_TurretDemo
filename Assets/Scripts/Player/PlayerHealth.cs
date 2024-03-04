@@ -6,9 +6,11 @@ public class PlayerHealth : MonoBehaviour
 {
     #region  Variables
 
+    [Header("Ints")]
+    readonly int maxHealth = 3;
+    public int health;
+    
     [Header("Floats")]
-    readonly float maxHealth = 3f;
-    float health;
     readonly float damageCooldown = 1f;
 
     [Header("Bools")]
@@ -59,7 +61,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
         health -= damage;
         print("Player has " + health + " health");

@@ -53,9 +53,13 @@ public class PlatformMove : MonoBehaviour
 
     #endregion
 
+    #region Enums
+    
     public enum DirectionState
     {
         vertical,
         horizontal
     }
+
+    #endregion
 }

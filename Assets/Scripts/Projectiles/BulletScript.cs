@@ -13,8 +13,10 @@ public class BulletScript : MonoBehaviour
 
     #region Variables
     
+    [Header("Ints")]
+    readonly int damage = 1;
+
     [Header("Floats")]
-    readonly float damage = 1f;
     readonly float despawnTime = 3f;
 
     [Header("Bools")]
