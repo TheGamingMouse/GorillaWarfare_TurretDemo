@@ -12,6 +12,7 @@ TagManager:
   - MainMenuCamPos
   - PlayerCamPos
   - Canvas
+  - MainUI
   layers:
   - Default
   - TransparentFX
