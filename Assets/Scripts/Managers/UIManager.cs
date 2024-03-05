@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -14,6 +16,10 @@ public class UIManager : MonoBehaviour
     int bananaAmount;
     int health;
     int specialAmmo;
+
+    [Header("Floats")]
+    [SerializeField] float ammoObjMoveSpeed = 0.1f;
+    float ammoObjDistance;
 
     [Header("Bools")]
     bool elementsFound;
@@ -29,6 +35,7 @@ public class UIManager : MonoBehaviour
     GameObject health3Obj;
     GameObject ammoObj;
     GameObject specialAmmoObj;
+    GameObject deathMsgObj;
     
     [Header("Transforms")]
     Transform ammoFront;
@@ -50,11 +57,13 @@ public class UIManager : MonoBehaviour
     void OnEnable()
     {
         CameraManager.OnPlayerFastCamActive += HandleStartGame;
+        PlayerHealth.OnPlayerDeath += HandlePlayerDeath;
     }
 
     void OnDisable()
     {
         CameraManager.OnPlayerFastCamActive -= HandleStartGame;
+        PlayerHealth.OnPlayerDeath -= HandlePlayerDeath;
     }
 
     #endregion
@@ -92,26 +101,41 @@ public class UIManager : MonoBehaviour
 
     void FindElements()
     {
-        bananaText = canvas.transform.Find("BananasText (TMP)").GetComponent<TextMeshProUGUI>();
-        specialAmmoText = canvas.transform.Find("Ammo/SpecialAmmo/SpecialAmmo (TMP)").GetComponent<TextMeshProUGUI>();
+        bananaText = canvas.transform.Find("UIElements/BananasText (TMP)").GetComponent<TextMeshProUGUI>();
+        specialAmmoText = canvas.transform.Find("UIElements/Ammo/SpecialAmmo/SpecialAmmo (TMP)").GetComponent<TextMeshProUGUI>();
 
-        health1Obj = canvas.transform.Find("Health/Health 1").gameObject;
-        health2Obj = canvas.transform.Find("Health/Health 2").gameObject;
-        health3Obj = canvas.transform.Find("Health/Health 3").gameObject;
-        ammoObj = canvas.transform.Find("Ammo/Ammo").gameObject;
-        specialAmmoObj = canvas.transform.Find("Ammo/SpecialAmmo").gameObject;
-        ammoFront = canvas.transform.Find("Ammo/AmmoFrontPos").transform;
-        ammoBack = canvas.transform.Find("Ammo/AmmoBackPos").transform;
+        health1Obj = canvas.transform.Find("UIElements/Health/Health 1").gameObject;
+        health2Obj = canvas.transform.Find("UIElements/Health/Health 2").gameObject;
+        health3Obj = canvas.transform.Find("UIElements/Health/Health 3").gameObject;
+
+        ammoObj = canvas.transform.Find("UIElements/Ammo/Ammo").gameObject;
+        specialAmmoObj = canvas.transform.Find("UIElements/Ammo/SpecialAmmo").gameObject;
+        ammoFront = canvas.transform.Find("UIElements/Ammo/AmmoFrontPos").transform;
+        ammoBack = canvas.transform.Find("UIElements/Ammo/AmmoBackPos").transform;
 
         healthImg1 = health1Obj.GetComponent<Image>();
         healthImg2 = health2Obj.GetComponent<Image>();
         healthImg3 = health3Obj.GetComponent<Image>();
+
+        ammoObjDistance = Vector3.Distance(ammoBack.position, ammoFront.position);
+
+        deathMsgObj = canvas.transform.Find("UIMenus/DeathMsgPanel").gameObject;
+        deathMsgObj.SetActive(false);
 
         elementsFound = true;
     }
 
     #endregion
 
+    #region ButtonMethods
+
+    public void ReturnToMainMenu()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    #endregion
+    
     #region UpdateMethods
 
     void UpdateBananaText()
@@ -159,25 +183,49 @@ public class UIManager : MonoBehaviour
         switch (aState)
         {
             case AmmoState.normal:
-                ammoObj.transform.position = ammoFront.position;
-                ammoObj.transform.SetAsLastSibling();
-                ammoObj.GetComponent<Image>().color = activeColor;
-
-                specialAmmoObj.transform.position = ammoBack.position;
-                specialAmmoObj.transform.SetAsFirstSibling();
-                specialAmmoObj.GetComponent<Image>().color = inactiveColor;
+                StopCoroutine(nameof(AmmoToBack));
+                StartCoroutine(AmmoToFront());
                 break;
 
             case AmmoState.special:
-                ammoObj.transform.position = ammoBack.position;
-                ammoObj.transform.SetAsFirstSibling();
-                ammoObj.GetComponent<Image>().color = inactiveColor;
-
-                specialAmmoObj.transform.position = ammoFront.position;
-                specialAmmoObj.transform.SetAsLastSibling();
-                specialAmmoObj.GetComponent<Image>().color = activeColor;
+                StopCoroutine(nameof(AmmoToFront));
+                StartCoroutine(AmmoToBack());
                 break;
         }
+    }
+
+    #endregion
+
+    #region Coroutines
+
+    IEnumerator AmmoToFront()
+    {
+        ammoObj.transform.position = Vector3.Lerp(ammoObj.transform.position, ammoFront.position, ammoObjMoveSpeed);
+        
+        specialAmmoObj.transform.position = Vector3.Lerp(specialAmmoObj.transform.position, ammoBack.position, ammoObjMoveSpeed);
+        
+        yield return new WaitForSeconds(ammoObjDistance * ammoObjMoveSpeed);
+
+        ammoObj.transform.SetAsLastSibling();
+        ammoObj.GetComponent<Image>().color = activeColor;
+
+        specialAmmoObj.transform.SetAsFirstSibling();
+        specialAmmoObj.GetComponent<Image>().color = inactiveColor;
+    }
+
+    IEnumerator AmmoToBack()
+    {
+        ammoObj.transform.position = Vector3.Lerp(ammoObj.transform.position, ammoBack.position, ammoObjMoveSpeed);
+        
+        specialAmmoObj.transform.position = Vector3.Lerp(specialAmmoObj.transform.position, ammoFront.position, ammoObjMoveSpeed);
+        
+        yield return new WaitForSeconds(ammoObjDistance * ammoObjMoveSpeed);
+
+        ammoObj.transform.SetAsFirstSibling();
+        ammoObj.GetComponent<Image>().color = inactiveColor;
+
+        specialAmmoObj.transform.SetAsLastSibling();
+        specialAmmoObj.GetComponent<Image>().color = activeColor;
     }
 
     #endregion
@@ -188,6 +236,11 @@ public class UIManager : MonoBehaviour
     {
         canvas.SetActive(true);
         FindElements();
+    }
+
+    void HandlePlayerDeath()
+    {
+        deathMsgObj.SetActive(true);
     }
 
     #endregion

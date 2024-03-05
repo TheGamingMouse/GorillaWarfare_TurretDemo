@@ -1,9 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
+    #region Events
+
+    public static event Action OnPlayerDeath;
+
+    #endregion
+    
     #region  Variables
 
     [Header("Ints")]
@@ -15,6 +23,7 @@ public class PlayerHealth : MonoBehaviour
 
     [Header("Bools")]
     public bool cooldown;
+    [SerializeField] bool invinsible = false;
 
     #endregion
 
@@ -38,7 +47,7 @@ public class PlayerHealth : MonoBehaviour
     void Start()
     {
         health = maxHealth;
-        print("Player has " + health + " health");
+        // print("Player has " + health + " health");
 
         cooldown = false;
     }
@@ -57,14 +66,20 @@ public class PlayerHealth : MonoBehaviour
     {
         if (health <= 0)
         {
-            print("Player is dead");
+            // print("Player is dead");
+            
+            Time.timeScale = 0;
+            OnPlayerDeath?.Invoke();
         }
     }
 
     public void TakeDamage(int damage)
     {
-        health -= damage;
-        print("Player has " + health + " health");
+        if (!invinsible)
+        {
+            health -= damage;
+        }
+        // print("Player has " + health + " health");
     }
 
     IEnumerator CooldownRoutine()

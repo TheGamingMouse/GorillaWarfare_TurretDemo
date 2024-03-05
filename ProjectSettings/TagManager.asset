@@ -13,6 +13,7 @@ TagManager:
   - PlayerCamPos
   - Canvas
   - MainUI
+  - Wall
   layers:
   - Default
   - TransparentFX

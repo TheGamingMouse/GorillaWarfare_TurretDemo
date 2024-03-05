@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour
@@ -21,9 +22,9 @@ public class CameraManager : MonoBehaviour
     readonly float moveSpeed = 4f;
 
     [Header("Bools")]
-    bool mainMenuCamBool;
-    bool playerCamBool;
-    bool playerFastCamBool;
+    [SerializeField] bool mainMenuCamBool;
+    [SerializeField] bool playerCamBool;
+    [SerializeField] bool playerFastCamBool;
     // bool printed;
 
     [Header("GameObjects")]
@@ -35,7 +36,7 @@ public class CameraManager : MonoBehaviour
     // bool printed = false;
 
     #endregion
-
+    
     #region StartUpdate
 
     // Start is called before the first frame update
