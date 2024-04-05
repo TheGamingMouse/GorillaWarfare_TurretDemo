@@ -32,6 +32,8 @@ public class PlayerHealth : MonoBehaviour
     void OnEnable()
     {
         BulletScript.OnDamage += HandleDamage;
+        EnemyDamage.OnDamage += HandleDamage;
+        
     }
 
     void OnDisable()

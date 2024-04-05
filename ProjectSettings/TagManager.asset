@@ -14,6 +14,7 @@ TagManager:
   - Canvas
   - MainUI
   - Wall
+  - Ground
   layers:
   - Default
   - TransparentFX
